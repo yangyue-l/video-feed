@@ -3,36 +3,22 @@ package dao
 import (
 	"video_feed/internal/database"
 	"video_feed/internal/models"
-
-	"gorm.io/gorm"
 )
 
-// CommentDao 评论数据访问层
-type CommentDao struct {
-	db *gorm.DB
+// CreateComment 创建评论
+func CreateComment(comment *models.Comment) error {
+	return database.DB.Create(comment).Error
 }
 
-// NewCommentDao 创建评论DAO
-func NewCommentDao() *CommentDao {
-	return &CommentDao{
-		db: database.GetDB(),
-	}
+// DeleteComment 删除评论
+func DeleteComment(id int64) error {
+	return database.DB.Delete(&models.Comment{}, id).Error
 }
 
-// Create 创建评论
-func (d *CommentDao) Create(comment *models.Comment) error {
-	return d.db.Create(comment).Error
-}
-
-// Delete 删除评论
-func (d *CommentDao) Delete(id uint) error {
-	return d.db.Delete(&models.Comment{}, id).Error
-}
-
-// FindByID 根据ID查找评论
-func (d *CommentDao) FindByID(id uint) (*models.Comment, error) {
+// FindCommentByID 根据ID查找评论
+func FindCommentByID(id int64) (*models.Comment, error) {
 	var comment models.Comment
-	err := d.db.First(&comment, id).Error
+	err := database.DB.First(&comment, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +26,8 @@ func (d *CommentDao) FindByID(id uint) (*models.Comment, error) {
 }
 
 // GetCommentList 获取视频评论列表
-func (d *CommentDao) GetCommentList(videoID uint) ([]models.Comment, error) {
+func GetCommentList(videoID int64) ([]models.Comment, error) {
 	var comments []models.Comment
-	err := d.db.Where("video_id = ?", videoID).Order("created_at DESC").Find(&comments).Error
+	err := database.DB.Where("video_id = ?", videoID).Order("created_at DESC").Find(&comments).Error
 	return comments, err
 }

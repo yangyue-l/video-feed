@@ -42,7 +42,7 @@ func Init(cfg *LogConfig, mode string) (err error) {
 	}
 
 	var core zapcore.Core
-	if mode == "dev" {
+	if mode == "debug" {
 		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
 		core = zapcore.NewTee(
 			zapcore.NewCore(encoder, writeSyncer, l),

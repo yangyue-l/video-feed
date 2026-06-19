@@ -1,35 +1,25 @@
 package controller
 
 import (
+	"video_feed/internal/models"
 	"video_feed/internal/service"
 	"video_feed/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
-
-// RegisterRequest 注册请求
-type RegisterRequest struct {
-	Username string `json:"username" binding:"required,min=3,max=32"`
-	Password string `json:"password" binding:"required,min=6,max=32"`
-}
-
-// LoginRequest 登录请求
-type LoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
 
 // Register 用户注册
 func Register(c *gin.Context) {
-	var req RegisterRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.ParamError(c, "参数错误: "+err.Error())
+	var p models.ParamSignUp
+	if err := c.ShouldBindJSON(&p); err != nil {
+		zap.L().Error("Register with invalid param", zap.Error(err))
+		utils.ParamError(c, Translate(err))
 		return
 	}
 
-	userService := service.NewUserService()
-	err := userService.Register(req.Username, req.Password)
-	if err != nil {
+	if err := service.Register(p.Username, p.Password); err != nil {
+		zap.L().Error("service.Register() failed", zap.Error(err))
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return
 	}
@@ -39,15 +29,16 @@ func Register(c *gin.Context) {
 
 // Login 用户登录
 func Login(c *gin.Context) {
-	var req LoginRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.ParamError(c, "参数错误: "+err.Error())
+	var p models.ParamLogin
+	if err := c.ShouldBindJSON(&p); err != nil {
+		zap.L().Error("Login with invalid param", zap.Error(err))
+		utils.ParamError(c, Translate(err))
 		return
 	}
 
-	userService := service.NewUserService()
-	token, err := userService.Login(req.Username, req.Password)
+	token, err := service.Login(p.Username, p.Password)
 	if err != nil {
+		zap.L().Error("service.Login() failed", zap.Error(err))
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return
 	}
@@ -59,9 +50,9 @@ func Login(c *gin.Context) {
 func GetUserInfo(c *gin.Context) {
 	userID := c.GetInt64("user_id")
 
-	userService := service.NewUserService()
-	userInfo, err := userService.GetUserInfo(userID)
+	userInfo, err := service.GetUserInfo(userID)
 	if err != nil {
+		zap.L().Error("service.GetUserInfo() failed", zap.Error(err))
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return
 	}

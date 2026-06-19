@@ -3,6 +3,7 @@ package router
 import (
 	"video_feed/config"
 	"video_feed/internal/controller"
+	"video_feed/internal/logger"
 	"video_feed/internal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,8 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	r := gin.New()
 
 	// 全局中间件
+	r.Use(logger.GinLogger())
+	r.Use(logger.GinRecovery(true))
 	r.Use(middleware.CORS())
 
 	// 静态文件服务
@@ -27,7 +30,6 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 		// 用户相关(无需认证)
 		userGroup := v1Group.Group("/user")
 		{
-			// TODO: 实现用户注册登录接口
 			userGroup.POST("/register", controller.Register)
 			userGroup.POST("/login", controller.Login)
 		}
@@ -36,7 +38,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 		authGroup := v1Group.Group("")
 		authGroup.Use(middleware.JWTAuth())
 		{
-			// TODO: 实现用户信息接口
+			//获取用户信息
 			authGroup.GET("/user", controller.GetUserInfo)
 
 			// TODO: 实现视频相关接口

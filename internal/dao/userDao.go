@@ -4,35 +4,27 @@ import (
 	"errors"
 	"video_feed/internal/database"
 	"video_feed/internal/models"
-
-	"gorm.io/gorm"
 )
 
-// UserDao 用户数据访问层
-type UserDao struct {
-	db *gorm.DB
-}
-
-// NewUserDao 创建用户DAO
-func NewUserDao() *UserDao {
-	return &UserDao{
-		db: database.GetDB(),
+// CheckUserExist 检查用户名是否已存在
+func CheckUserExist(username string) error {
+	var count int64
+	database.DB.Model(&models.User{}).Where("username = ?", username).Count(&count)
+	if count > 0 {
+		return errors.New("用户名已经存在")
 	}
+	return nil
 }
 
-// Create 创建用户
-func (d *UserDao) Create(user *models.User) error {
-	return d.db.Create(user).Error
-}
-
-func (d *UserDao) Save(user *models.User) error {
-	return d.db.Save(user).Error
+// InsertUser 插入用户
+func InsertUser(user *models.User) error {
+	return database.DB.Create(user).Error
 }
 
 // FindByUsername 根据用户名查找用户
-func (d *UserDao) FindByUsername(username string) (*models.User, error) {
+func FindUserByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := d.db.Where("username = ?", username).First(&user).Error
+	err := database.DB.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,50 +32,16 @@ func (d *UserDao) FindByUsername(username string) (*models.User, error) {
 }
 
 // FindByID 根据ID查找用户
-func (d *UserDao) FindByID(id uint) (*models.User, error) {
+func FindUserByID(id int64) (*models.User, error) {
 	var user models.User
-	err := d.db.First(&user, id).Error
+	err := database.DB.First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-// Update 更新用户
-func (d *UserDao) Update(user *models.User) error {
-	return d.db.Save(user).Error
-}
-
-// GetFollowCount 获取关注数
-func (d *UserDao) GetFollowCount(userID uint) (int64, error) {
-	var count int64
-	err := d.db.Model(&models.Relation{}).Where("user_id = ?", userID).Count(&count).Error
-	return count, err
-}
-
-// GetFollowerCount 获取粉丝数
-func (d *UserDao) GetFollowerCount(userID uint) (int64, error) {
-	var count int64
-	err := d.db.Model(&models.Relation{}).Where("to_user_id = ?", userID).Count(&count).Error
-	return count, err
-}
-
-// IsFollow 检查是否关注
-func (d *UserDao) IsFollow(userID, toUserID uint) bool {
-	var count int64
-	d.db.Model(&models.Relation{}).Where("user_id = ? AND to_user_id = ?", userID, toUserID).Count(&count)
-	return count > 0
-}
-
-func (d *UserDao) FindUserByName(userName string) (err error) {
-	// err := d.db.Where("user_name = ?", userName).First(user).Error
-	// if err != nil {
-	// 	return nil, err
-	// }
-	var count int64
-	d.db.Where("name = ?", userName).Count(&count)
-	if count > 0 {
-		return errors.New("用户已经存在")
-	}
-	return
+// UpdateUser 更新用户
+func UpdateUser(user *models.User) error {
+	return database.DB.Save(user).Error
 }

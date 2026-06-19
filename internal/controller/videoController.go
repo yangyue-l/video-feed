@@ -1,20 +1,34 @@
 package controller
 
 import (
+	"video_feed/internal/dao"
+	"video_feed/internal/models"
 	"video_feed/internal/service"
 	"video_feed/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // PublishVideo 发布视频
 func PublishVideo(c *gin.Context) {
 	// TODO: 实现发布视频逻辑
-	// 1. 获取视频文件和封面文件
-	// 2. 验证文件类型和大小
-	// 3. 保存文件到服务器
-	// 4. 创建视频记录
-	// 5. 返回响应
+	var p models.Video
+	// 1. 获取用户信息
+	userID := c.GetInt64("user_id")
+	if err := c.ShouldBindJSON(&p); err != nil {
+		zap.L().Error("PublishVideo with invalid param", zap.Error(err))
+		utils.ParamError(c, Translate(err))
+		return
+	}
+	user, err := dao.FindUserByID(userID)
+	if err != nil {
+		zap.L().Error("dao.FindUserByID() failed", zap.Error(err))
+		utils.Error(c, 1)
+		return
+	}
+	// 2. 获取上传的视频的信息
+	_ = user // 暂时使用
 
 	utils.Success(c, nil)
 }
@@ -23,8 +37,7 @@ func PublishVideo(c *gin.Context) {
 func GetVideoFeed(c *gin.Context) {
 	userID := c.GetInt64("user_id")
 
-	videoService := service.NewVideoService()
-	videos, err := videoService.GetVideoFeed(userID, 0, 10)
+	videos, err := service.GetVideoFeed(userID, 0, 10)
 	if err != nil {
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return
@@ -39,8 +52,7 @@ func GetVideoFeed(c *gin.Context) {
 func GetUserVideos(c *gin.Context) {
 	userID := c.GetInt64("user_id")
 
-	videoService := service.NewVideoService()
-	videos, err := videoService.GetUserVideos(userID)
+	videos, err := service.GetUserVideos(userID)
 	if err != nil {
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return

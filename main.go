@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"video_feed/config"
+	"video_feed/internal/controller"
 	"video_feed/internal/database"
 	"video_feed/internal/logger"
 	"video_feed/internal/router"
@@ -32,7 +33,12 @@ func main() {
 		log.Fatalf("初始化Logger失败: %v", err)
 	}
 
-	// 3. 初始化数据库连接
+	// 3. 初始化翻译器
+	if err := controller.InitTrans("zh"); err != nil {
+		log.Fatalf("初始化翻译器失败: %v", err)
+	}
+
+	// 4. 初始化数据库连接
 	if err := database.InitMySQL(cfg); err != nil {
 		log.Fatalf("初始化MySQL失败: %v", err)
 	}
@@ -40,22 +46,22 @@ func main() {
 		log.Fatalf("初始化Redis失败: %v", err)
 	}
 
-	// 4. 初始化阿里云OSS（可选）
+	// 5. 初始化阿里云OSS（可选）
 	if cfg.OSS.Endpoint != "" {
 		if err := utils.InitOSS(&cfg.OSS); err != nil {
 			log.Printf("初始化OSS失败（可选功能）: %v", err)
 		}
 	}
 
-	// 5. 初始化Snowflake
+	// 6. 初始化Snowflake
 	if err := utils.InitSnowflake(); err != nil {
 		log.Fatalf("初始化Snowflake失败: %v", err)
 	}
 
-	// 6. 设置路由
+	// 7. 设置路由
 	r := router.SetupRouter(cfg)
 
-	// 7. 启动服务器
+	// 8. 启动服务器
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
 	log.Printf("服务器启动在 %s", addr)
 	if err := r.Run(addr); err != nil {
