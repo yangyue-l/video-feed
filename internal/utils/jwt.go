@@ -10,22 +10,16 @@ import (
 
 // Claims JWT声明
 type Claims struct {
-	UserID   uint   `json:"user_id"`
+	UserID   int64  `json:"user_id,string"`
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
 // GenerateToken 生成JWT Token
-func GenerateToken(userID uint, username string) (string, error) {
-	// TODO: 实现JWT Token生成
+func GenerateToken(userID int64, username string) (string, error) {
 	// 1. 获取JWT配置
-	// 2. 创建Claims
-	// 3. 生成Token
-	// 4. 返回Token字符串
-
-	// 示例代码框架：
 	cfg := config.GetConfig()
-
+	// 2. 创建Claims
 	claims := Claims{
 		UserID:   userID,
 		Username: username,
@@ -35,26 +29,22 @@ func GenerateToken(userID uint, username string) (string, error) {
 			Issuer:    "video_feed",
 		},
 	}
-
+	// 3. 生成Token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// 4. 返回Token字符串
 	return token.SignedString([]byte(cfg.JWT.Secret))
+
 }
 
 // ParseToken 解析JWT Token
 func ParseToken(tokenString string) (*Claims, error) {
-	// TODO: 实现JWT Token解析
 	// 1. 获取JWT配置
-	// 2. 解析Token
-	// 3. 验证Token有效性
-	// 4. 返回Claims
-
-	// 示例代码框架：
 	cfg := config.GetConfig()
-
+	// 2. 解析Token
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(cfg.JWT.Secret), nil
 	})
-
+	// 3. 验证Token有效性
 	if err != nil {
 		return nil, err
 	}
@@ -63,5 +53,7 @@ func ParseToken(tokenString string) (*Claims, error) {
 		return claims, nil
 	}
 
+	// 4. 返回Claims
 	return nil, errors.New("invalid token")
+
 }

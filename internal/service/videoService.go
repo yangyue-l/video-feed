@@ -26,7 +26,7 @@ func NewVideoService() *VideoService {
 }
 
 // PublishVideo 发布视频
-func (s *VideoService) PublishVideo(userID uint, title string, videoFile *multipart.FileHeader, coverFile *multipart.FileHeader) error {
+func (s *VideoService) PublishVideo(userID int64, title string, videoFile *multipart.FileHeader, coverFile *multipart.FileHeader) error {
 	// TODO: 实现发布视频逻辑
 	// 1. 上传视频到阿里云 OSS
 	// 2. 上传封面到阿里云 OSS
@@ -36,7 +36,7 @@ func (s *VideoService) PublishVideo(userID uint, title string, videoFile *multip
 }
 
 // GetVideoFeed 获取视频Feed流
-func (s *VideoService) GetVideoFeed(userID uint, latestTime int64, limit int) ([]models.VideoResponse, error) {
+func (s *VideoService) GetVideoFeed(userID int64, latestTime int64, limit int) ([]models.VideoResponse, error) {
 	// TODO: 实现获取视频Feed流逻辑
 	// 1. 查询视频列表
 	// 2. 查询每个视频的作者信息
@@ -47,14 +47,14 @@ func (s *VideoService) GetVideoFeed(userID uint, latestTime int64, limit int) ([
 }
 
 // GetUserVideos 获取用户视频列表
-func (s *VideoService) GetUserVideos(userID uint) ([]models.VideoResponse, error) {
+func (s *VideoService) GetUserVideos(userID int64) ([]models.VideoResponse, error) {
 	// TODO: 实现获取用户视频列表逻辑
 
 	return nil, nil
 }
 
 // GetVideoDetail 获取视频详情
-func (s *VideoService) GetVideoDetail(userID, videoID uint) (*models.VideoResponse, error) {
+func (s *VideoService) GetVideoDetail(userID, videoID int64) (*models.VideoResponse, error) {
 	// TODO: 实现获取视频详情逻辑
 
 	return nil, nil

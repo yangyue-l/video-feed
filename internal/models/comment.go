@@ -4,18 +4,18 @@ import "time"
 
 // Comment 评论模型
 type Comment struct {
-	// TODO: 定义评论模型字段
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	UserID    uint      `json:"user_id" gorm:"index;not null"`
-	VideoID   uint      `json:"video_id" gorm:"index;not null"`
+	ID        int64     `json:"id,string" gorm:"primaryKey"`
+	UserID    int64     `json:"user_id,string" gorm:"index;not null"`
+	VideoID   int64     `json:"video_id,string" gorm:"index;not null"`
+	ParentID  int64     `json:"parent_id,string" gorm:"default:0;index"`
 	Content   string    `json:"content" gorm:"type:text;not null"`
 	CreatedAt time.Time `json:"created_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
 }
 
 // CommentResponse 评论响应
 type CommentResponse struct {
-	// TODO: 定义评论响应字段
-	ID         uint         `json:"id"`
+	ID         int64        `json:"id,string"`
 	User       UserResponse `json:"user"`
 	Content    string       `json:"content"`
 	CreateDate string       `json:"create_date"`

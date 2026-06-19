@@ -4,11 +4,12 @@ import "time"
 
 // Relation 关注关系模型
 type Relation struct {
-	// TODO: 定义关注关系模型字段
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	UserID    uint      `json:"user_id" gorm:"index;not null"`
-	ToUserID  uint      `json:"to_user_id" gorm:"index;not null"`
+	ID        int64     `json:"id,string" gorm:"primaryKey"`
+	UserID    int64     `json:"user_id,string" gorm:"uniqueIndex:idx_user_follow;not null"`
+	ToUserID  int64     `json:"to_user_id,string" gorm:"uniqueIndex:idx_user_follow;not null"`
 	CreatedAt time.Time `json:"created_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
+	ToUser    User      `json:"to_user" gorm:"foreignKey:ToUserID"`
 }
 
 // TableName 表名

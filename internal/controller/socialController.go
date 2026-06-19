@@ -14,7 +14,7 @@ func FollowUser(c *gin.Context) {
 
 // GetFollowList 获取关注列表
 func GetFollowList(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 	_ = userID
 
 	// TODO: 调用service层获取关注列表
@@ -23,7 +23,7 @@ func GetFollowList(c *gin.Context) {
 
 // GetFollowerList 获取粉丝列表
 func GetFollowerList(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 	_ = userID
 
 	// TODO: 调用service层获取粉丝列表

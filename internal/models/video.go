@@ -4,9 +4,8 @@ import "time"
 
 // Video 视频模型
 type Video struct {
-	// TODO: 定义视频模型字段
-	ID            uint      `json:"id" gorm:"primaryKey"`
-	UserID        uint      `json:"user_id" gorm:"index;not null"`
+	ID            int64     `json:"id,string" gorm:"primaryKey"`
+	UserID        int64     `json:"user_id,string" gorm:"index;not null"`
 	Title         string    `json:"title" gorm:"size:128;not null"`
 	PlayURL       string    `json:"play_url" gorm:"size:256;not null"`
 	CoverURL      string    `json:"cover_url" gorm:"size:256"`
@@ -14,12 +13,12 @@ type Video struct {
 	CommentCount  int64     `json:"comment_count" gorm:"default:0"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+	User          User      `json:"user" gorm:"foreignKey:UserID"`
 }
 
 // VideoResponse 视频响应
 type VideoResponse struct {
-	// TODO: 定义视频响应字段
-	ID            uint         `json:"id"`
+	ID            int64        `json:"id,string"`
 	Author        UserResponse `json:"author"`
 	PlayURL       string       `json:"play_url"`
 	CoverURL      string       `json:"cover_url"`

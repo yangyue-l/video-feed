@@ -4,11 +4,12 @@ import "time"
 
 // Favorite 点赞模型
 type Favorite struct {
-	// TODO: 定义点赞模型字段
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	UserID    uint      `json:"user_id" gorm:"index;not null"`
-	VideoID   uint      `json:"video_id" gorm:"index;not null"`
+	ID        int64     `json:"id,string" gorm:"primaryKey"`
+	UserID    int64     `json:"user_id,string" gorm:"uniqueIndex:idx_user_video;not null"`
+	VideoID   int64     `json:"video_id,string" gorm:"uniqueIndex:idx_user_video;not null"`
 	CreatedAt time.Time `json:"created_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
+	Video     Video     `json:"video" gorm:"foreignKey:VideoID"`
 }
 
 // TableName 表名

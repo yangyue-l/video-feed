@@ -14,7 +14,7 @@ func FavoriteVideo(c *gin.Context) {
 
 // GetFavoriteList 获取用户点赞列表
 func GetFavoriteList(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 	_ = userID
 
 	// TODO: 调用service层获取点赞列表

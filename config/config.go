@@ -10,12 +10,28 @@ import (
 
 // Config 应用配置结构体
 type Config struct {
-	Server   ServerConfig   `mapstructure:"server"`
-	Database DatabaseConfig `mapstructure:"database"`
-	Redis    RedisConfig    `mapstructure:"redis"`
-	JWT      JWTConfig      `mapstructure:"jwt"`
-	Upload   UploadConfig   `mapstructure:"upload"`
-	OSS      OSSConfig      `mapstructure:"oss"`
+	Server    ServerConfig    `mapstructure:"server"`
+	Database  DatabaseConfig  `mapstructure:"database"`
+	Redis     RedisConfig     `mapstructure:"redis"`
+	JWT       JWTConfig       `mapstructure:"jwt"`
+	Upload    UploadConfig    `mapstructure:"upload"`
+	OSS       OSSConfig       `mapstructure:"oss"`
+	Log       LogConfig       `mapstructure:"log"`
+	Snowflake SnowflakeConfig `mapstructure:"snowflake"`
+}
+
+// SnowflakeConfig Snowflake配置
+type SnowflakeConfig struct {
+	MachineID int64 `mapstructure:"machine_id"` // 机器ID (0-1023)
+}
+
+// LogConfig 日志配置
+type LogConfig struct {
+	Filename   string `mapstructure:"filename"`
+	MaxSize    int    `mapstructure:"max_size"`
+	MaxBackups int    `mapstructure:"max_backups"`
+	MaxAge     int    `mapstructure:"max_age"`
+	Level      string `mapstructure:"level"`
 }
 
 // ServerConfig 服务器配置

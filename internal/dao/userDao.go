@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"video_feed/internal/database"
 	"video_feed/internal/models"
 
@@ -22,6 +23,10 @@ func NewUserDao() *UserDao {
 // Create 创建用户
 func (d *UserDao) Create(user *models.User) error {
 	return d.db.Create(user).Error
+}
+
+func (d *UserDao) Save(user *models.User) error {
+	return d.db.Save(user).Error
 }
 
 // FindByUsername 根据用户名查找用户
@@ -68,4 +73,17 @@ func (d *UserDao) IsFollow(userID, toUserID uint) bool {
 	var count int64
 	d.db.Model(&models.Relation{}).Where("user_id = ? AND to_user_id = ?", userID, toUserID).Count(&count)
 	return count > 0
+}
+
+func (d *UserDao) FindUserByName(userName string) (err error) {
+	// err := d.db.Where("user_name = ?", userName).First(user).Error
+	// if err != nil {
+	// 	return nil, err
+	// }
+	var count int64
+	d.db.Where("name = ?", userName).Count(&count)
+	if count > 0 {
+		return errors.New("用户已经存在")
+	}
+	return
 }

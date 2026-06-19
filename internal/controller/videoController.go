@@ -21,7 +21,7 @@ func PublishVideo(c *gin.Context) {
 
 // GetVideoFeed 获取视频Feed流
 func GetVideoFeed(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 
 	videoService := service.NewVideoService()
 	videos, err := videoService.GetVideoFeed(userID, 0, 10)
@@ -37,7 +37,7 @@ func GetVideoFeed(c *gin.Context) {
 
 // GetUserVideos 获取用户视频列表
 func GetUserVideos(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 
 	videoService := service.NewVideoService()
 	videos, err := videoService.GetUserVideos(userID)

@@ -28,13 +28,13 @@ func Register(c *gin.Context) {
 	}
 
 	userService := service.NewUserService()
-	token, err := userService.Register(req.Username, req.Password)
+	err := userService.Register(req.Username, req.Password)
 	if err != nil {
 		utils.ErrorWithMessage(c, 1, err.Error())
 		return
 	}
 
-	utils.Success(c, token)
+	utils.Success(c, "注册成功")
 }
 
 // Login 用户登录
@@ -57,7 +57,7 @@ func Login(c *gin.Context) {
 
 // GetUserInfo 获取用户信息
 func GetUserInfo(c *gin.Context) {
-	userID := c.GetUint("user_id")
+	userID := c.GetInt64("user_id")
 
 	userService := service.NewUserService()
 	userInfo, err := userService.GetUserInfo(userID)
