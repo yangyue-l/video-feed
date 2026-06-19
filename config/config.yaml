@@ -1,0 +1,44 @@
+# 服务器配置
+server:
+  port: 8080
+  mode: debug  # debug, release, test
+
+# 数据库配置
+database:
+  host: localhost
+  port: 3306
+  username: root
+  password: 123456
+  dbname: videofeed
+  max_idle_conns: 10
+  max_open_conns: 100
+
+# Redis配置
+redis:
+  host: localhost
+  port: 6379
+  password: 123456
+  db: 0
+
+# JWT配置
+jwt:
+  secret: your-secret-key-change-in-production
+  expire_time: 72  # 过期时间(小时)
+
+# 上传配置
+upload:
+  max_size: 100  # MB
+  video_path: ./static/videos
+  cover_path: ./static/covers
+  allow_types:
+    - mp4
+    - avi
+    - mov
+
+# 阿里云OSS配置 (优先从环境变量读取)
+oss:
+  endpoint: ""           # 环境变量: OSS_ENDPOINT
+  access_key_id: ""      # 环境变量: OSS_ACCESS_KEY_ID
+  access_key_secret: ""  # 环境变量: OSS_ACCESS_KEY_SECRET
+  bucket_name: ""        # 环境变量: OSS_BUCKET_NAME
+  domain: ""             # 环境变量: OSS_DOMAIN
