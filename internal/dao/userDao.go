@@ -45,3 +45,11 @@ func FindUserByID(id int64) (*models.User, error) {
 func UpdateUser(user *models.User) error {
 	return database.DB.Save(user).Error
 }
+
+func FindUserByVideoID(videoID int64) (u *models.User, err error) {
+	u = new(models.User)
+	err = database.DB.Joins("JOIN videos on videos.user_id = users.id").
+		Where("videos.id = ?", videoID).
+		First(u).Error
+	return
+}

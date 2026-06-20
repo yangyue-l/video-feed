@@ -34,33 +34,37 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 			userGroup.POST("/login", controller.Login)
 		}
 
+		// 公开接口（无需登录）
+		videoGroup := v1Group.Group("/video")
+		{
+			videoGroup.GET("/feed", controller.GetVideoFeed)        // 视频流
+			videoGroup.GET("/list", controller.GetUserVideos)       // 用户视频列表
+			videoGroup.GET("/detail/:id", controller.GetVideoDetail) // 视频详情
+		}
+
+		// 评论列表（公开，未登录也能看）
+		v1Group.GET("/interact/comment/list", controller.GetCommentList)
+
 		// 需要认证的接口
 		authGroup := v1Group.Group("")
 		authGroup.Use(middleware.JWTAuth())
 		{
-			//获取用户信息
+			// 获取用户信息
 			authGroup.GET("/user", controller.GetUserInfo)
 
-			// TODO: 实现视频相关接口
-			videoGroup := authGroup.Group("/video")
-			{
-				videoGroup.POST("/publish", controller.PublishVideo)
-				videoGroup.GET("/feed", controller.GetVideoFeed)
-				videoGroup.GET("/list", controller.GetUserVideos)
-				videoGroup.GET("/:id", controller.GetVideoDetail)
-			}
+			// 视频发布（需要登录）
+			authGroup.POST("/video/publish", controller.PublishVideo)
 
-			// TODO: 实现互动相关接口
+			// 互动相关接口（需要登录）
 			interactGroup := authGroup.Group("/interact")
 			{
 				interactGroup.POST("/favorite", controller.FavoriteVideo)
 				interactGroup.GET("/favorite/list", controller.GetFavoriteList)
 				interactGroup.POST("/comment", controller.AddComment)
-				interactGroup.GET("/comment/list", controller.GetCommentList)
 				interactGroup.DELETE("/comment/:id", controller.DeleteComment)
 			}
 
-			// TODO: 实现社交相关接口
+			// 社交相关接口（需要登录）
 			socialGroup := authGroup.Group("/social")
 			{
 				socialGroup.POST("/follow", controller.FollowUser)
