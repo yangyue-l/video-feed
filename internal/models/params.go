@@ -13,6 +13,11 @@ type ParamLogin struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// ParamVideo 发布视频参数
+type ParamVideo struct {
+	Title string `form:"title" json:"title" binding:"required"`
+}
+
 // ParamUserAction 关注/取关用户参数
 type ParamUserAction struct {
 	ToUserID   int64 `json:"to_user_id" binding:"required"`
@@ -30,7 +35,7 @@ type ParamCommentAction struct {
 	VideoID    int64  `json:"video_id" binding:"required"`
 	Content    string `json:"content" binding:"required"`
 	ActionType int    `json:"action_type" binding:"required,oneof=1 2"` // 1-发布评论 2-删除评论
-	CommentID  int64  `json:"comment_id"`                              // 删除评论时需要
+	CommentID  int64  `json:"comment_id"`                               // 删除评论时需要
 }
 
 // ParamVideoList 视频列表查询参数

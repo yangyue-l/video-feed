@@ -25,13 +25,13 @@ type TokenResponse struct {
 
 // 响应状态码
 const (
-	CodeSuccess       = 0
-	CodeError         = 1
-	CodeUnauthorized  = 401
-	CodeForbidden     = 403
-	CodeNotFound      = 404
-	CodeParamError    = 400
-	CodeServerError   = 500
+	CodeSuccess      = 0
+	CodeError        = 1
+	CodeUnauthorized = 401
+	CodeForbidden    = 403
+	CodeNotFound     = 404
+	CodeParamError   = 400
+	CodeServerError  = 500
 )
 
 // 响应消息
@@ -42,7 +42,7 @@ var messageMap = map[int]string{
 	CodeForbidden:    "禁止访问",
 	CodeNotFound:     "资源不存在",
 	CodeParamError:   "参数错误",
-	CodeServerError:  "服务器内部错误",
+	CodeServerError:  "服务器繁忙",
 }
 
 // GetMessage 获取响应消息
