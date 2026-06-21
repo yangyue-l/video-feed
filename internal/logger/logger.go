@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -16,6 +17,7 @@ import (
 )
 
 var lg *zap.Logger
+var lumberJackLogger *lumberjack.Logger
 
 // LogConfig 日志配置
 type LogConfig struct {
@@ -68,13 +70,22 @@ func getEncoder() zapcore.Encoder {
 }
 
 func getLogWriter(filename string, maxSize, maxBackup, maxAge int) zapcore.WriteSyncer {
-	lumberJackLogger := &lumberjack.Logger{
+	lumberJackLogger = &lumberjack.Logger{
 		Filename:   filename,
 		MaxSize:    maxSize,
 		MaxBackups: maxBackup,
 		MaxAge:     maxAge,
 	}
 	return zapcore.AddSync(lumberJackLogger)
+}
+
+// Close 关闭日志文件
+func Close() {
+	if lumberJackLogger != nil {
+		if err := lumberJackLogger.Close(); err != nil {
+			log.Printf("关闭日志文件失败: %v", err)
+		}
+	}
 }
 
 // GinLogger 接收gin框架默认的日志

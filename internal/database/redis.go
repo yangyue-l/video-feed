@@ -32,3 +32,10 @@ func InitRedis(cfg *config.Config) error {
 func GetRedis() *redis.Client {
 	return RDB
 }
+
+// CloseRedis 关闭Redis连接
+func CloseRedis() {
+	if err := RDB.Close(); err != nil {
+		log.Printf("关闭Redis连接失败: %v", err)
+	}
+}
