@@ -37,12 +37,26 @@ func AddComment(c *gin.Context) {
 
 // DeleteComment 删除评论
 func DeleteComment(c *gin.Context) {
-	// TODO: 实现删除评论逻辑
+	userID := c.GetInt64("user_id")
+
+	p := new(models.ParamDeleteComment)
+	if err := c.ShouldBindUri(p); err != nil {
+		utils.Error(c, 400)
+		return
+	}
+
+	if err := service.DeleteComment(userID, p.CommentID); err != nil {
+		zap.L().Error("service.DeleteComment() failed", zap.Error(err))
+		utils.ErrorWithMessage(c, 403, err.Error())
+		return
+	}
+
 	utils.Success(c, nil)
 }
 
 // GetCommentList 获取视频评论列表
 func GetCommentList(c *gin.Context) {
 	// TODO: 实现获取评论列表逻辑
+
 	utils.Success(c, nil)
 }

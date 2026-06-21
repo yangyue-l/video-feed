@@ -1,14 +1,17 @@
 package service
 
 import (
+	"fmt"
 	"video_feed/internal/dao"
+	"video_feed/internal/database"
 	"video_feed/internal/models"
 	"video_feed/internal/utils"
+
+	"gorm.io/gorm"
 )
 
 // AddComment 添加评论
 func AddComment(userID, videoID, parentID int64, content string) (*models.CommentResponse, error) {
-	// TODO: 实现添加评论逻辑
 	//获取用户信息
 	user, err := dao.FindUserByID(userID)
 	if err != nil {
@@ -33,6 +36,10 @@ func AddComment(userID, videoID, parentID int64, content string) (*models.Commen
 		return nil, err
 	}
 
+	if err := dao.UpdateCommentCountTx(database.DB, videoID, 1); err != nil {
+		return nil, err
+	}
+
 	commentRes := &models.CommentResponse{
 		ID:         comment.ID,
 		User:       *userRes,
@@ -44,8 +51,28 @@ func AddComment(userID, videoID, parentID int64, content string) (*models.Commen
 
 // DeleteComment 删除评论
 func DeleteComment(userID, commentID int64) error {
-	// TODO: 实现删除评论逻辑
-	return nil
+	return database.DB.Transaction(func(tx *gorm.DB) error {
+		comment, err := dao.FindCommentByIDTx(tx, commentID)
+		if err != nil {
+			return err
+		}
+
+		if comment.UserID != userID {
+			video, err := dao.FindVideoByIDTx(tx, comment.VideoID)
+			if err != nil {
+				return err
+			}
+			if video.UserID != userID {
+				return fmt.Errorf("无权删除该评论")
+			}
+		}
+
+		if err := dao.DeleteCommentTx(tx, commentID); err != nil {
+			return err
+		}
+
+		return dao.UpdateCommentCountTx(tx, comment.VideoID, -1)
+	})
 }
 
 // GetCommentList 获取视频评论列表

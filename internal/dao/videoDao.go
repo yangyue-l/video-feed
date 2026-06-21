@@ -22,6 +22,16 @@ func FindVideoByID(id int64) (*models.Video, error) {
 	return &video, nil
 }
 
+// FindVideoByIDTx 在事务中根据ID查找视频
+func FindVideoByIDTx(tx *gorm.DB, id int64) (*models.Video, error) {
+	var video models.Video
+	err := tx.First(&video, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &video, nil
+}
+
 // GetVideoFeed 获取视频Feed流
 func GetVideoFeed(latestTime int64, limit int) ([]models.Video, error) {
 	var videos []models.Video

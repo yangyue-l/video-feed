@@ -3,6 +3,8 @@ package dao
 import (
 	"video_feed/internal/database"
 	"video_feed/internal/models"
+
+	"gorm.io/gorm"
 )
 
 // CreateComment 创建评论
@@ -25,9 +27,30 @@ func FindCommentByID(id int64) (*models.Comment, error) {
 	return &comment, nil
 }
 
+// FindCommentByIDTx 在事务中根据ID查找评论
+func FindCommentByIDTx(tx *gorm.DB, id int64) (*models.Comment, error) {
+	var comment models.Comment
+	err := tx.First(&comment, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &comment, nil
+}
+
 // GetCommentList 获取视频评论列表
 func GetCommentList(videoID int64) ([]models.Comment, error) {
 	var comments []models.Comment
 	err := database.DB.Where("video_id = ?", videoID).Order("created_at DESC").Find(&comments).Error
 	return comments, err
+}
+
+// DeleteCommentTx 在事务中删除评论
+func DeleteCommentTx(tx *gorm.DB, id int64) error {
+	return tx.Delete(&models.Comment{}, id).Error
+}
+
+// UpdateCommentCountTx 在事务中更新评论数
+func UpdateCommentCountTx(tx *gorm.DB, videoID int64, delta int64) error {
+	return tx.Model(&models.Video{}).Where("id = ?", videoID).
+		UpdateColumn("comment_count", gorm.Expr("comment_count + ?", delta)).Error
 }

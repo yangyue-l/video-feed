@@ -46,10 +46,20 @@ func UpdateUser(user *models.User) error {
 	return database.DB.Save(user).Error
 }
 
+// FindUserByVideoID 根据发布视频的用户ID找到改用户
 func FindUserByVideoID(videoID int64) (u *models.User, err error) {
 	u = new(models.User)
 	err = database.DB.Joins("JOIN videos on videos.user_id = users.id").
 		Where("videos.id = ?", videoID).
+		First(u).Error
+	return
+}
+
+// FindUserByCommentID 根据评论ID找到发布评论的用户
+func FindUserByCommentID(commentID int64) (u *models.User, err error) {
+	u = new(models.User)
+	err = database.DB.Joins("JOIN comments on comments.user_id = users.id").
+		Where("comments.id = ?", commentID).
 		First(u).Error
 	return
 }
