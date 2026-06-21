@@ -77,6 +77,24 @@ func DeleteComment(userID, commentID int64) error {
 
 // GetCommentList 获取视频评论列表
 func GetCommentList(videoID int64) ([]models.CommentResponse, error) {
-	// TODO: 实现获取评论列表逻辑
-	return nil, nil
+	comments, err := dao.GetCommentList(videoID)
+	if err != nil {
+		return nil, err
+	}
+	var commentResS []models.CommentResponse
+	for _, comment := range comments {
+		commentRes := &models.CommentResponse{
+			ID: comment.ID,
+			User: models.UserResponse{
+				ID:       comment.User.ID,
+				Username: comment.User.Username,
+				Nickname: comment.User.Nickname,
+				Avatar:   comment.User.Avatar,
+			},
+			Content:    comment.Content,
+			CreateDate: comment.CreatedAt.Format("2006-01-02"),
+		}
+		commentResS = append(commentResS, *commentRes)
+	}
+	return commentResS, nil
 }

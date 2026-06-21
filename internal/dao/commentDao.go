@@ -40,7 +40,7 @@ func FindCommentByIDTx(tx *gorm.DB, id int64) (*models.Comment, error) {
 // GetCommentList 获取视频评论列表
 func GetCommentList(videoID int64) ([]models.Comment, error) {
 	var comments []models.Comment
-	err := database.DB.Where("video_id = ?", videoID).Order("created_at DESC").Find(&comments).Error
+	err := database.DB.Preload("User").Where("video_id = ?", videoID).Order("created_at DESC").Find(&comments).Error
 	return comments, err
 }
 

@@ -44,6 +44,11 @@ type ParamDeleteComment struct {
 	CommentID int64 `uri:"id" binding:"required"`
 }
 
+// ParamCommentList 评论列表查询参数
+type ParamCommentList struct {
+	VideoID int64 `form:"video_id" binding:"required"`
+}
+
 // ParamVideoList 视频列表查询参数
 type ParamVideoList struct {
 	UserID     int64 `json:"user_id" form:"user_id"`

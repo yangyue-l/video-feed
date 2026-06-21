@@ -56,7 +56,18 @@ func DeleteComment(c *gin.Context) {
 
 // GetCommentList 获取视频评论列表
 func GetCommentList(c *gin.Context) {
-	// TODO: 实现获取评论列表逻辑
+	p := new(models.ParamCommentList)
+	if err := c.ShouldBindQuery(p); err != nil {
+		utils.Error(c, 400)
+		return
+	}
 
-	utils.Success(c, nil)
+	comments, err := service.GetCommentList(p.VideoID)
+	if err != nil {
+		zap.L().Error("service.GetCommentList() failed", zap.Error(err))
+		utils.Error(c, 500)
+		return
+	}
+
+	utils.Success(c, comments)
 }
