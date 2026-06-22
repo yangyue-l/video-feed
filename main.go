@@ -95,9 +95,9 @@ func main() {
 	}
 
 	// 关闭数据库连接
-	database.CloseMySQL()
-	database.CloseRedis()
+	defer database.CloseMySQL()
+	defer database.CloseRedis()
 	// 关闭日志文件
-	logger.Close()
+	defer logger.Close()
 	log.Println("服务器已退出")
 }

@@ -90,8 +90,10 @@ func (o *OSSClient) UploadCover(file *multipart.FileHeader) (string, error) {
 
 // GetFileURL 获取文件访问URL
 func (o *OSSClient) GetFileURL(objectKey string) string {
-	// 确保域名以 / 结尾
 	domain := o.domain
+	if !strings.HasPrefix(domain, "http://") && !strings.HasPrefix(domain, "https://") {
+		domain = "https://" + domain
+	}
 	if !strings.HasSuffix(domain, "/") {
 		domain += "/"
 	}

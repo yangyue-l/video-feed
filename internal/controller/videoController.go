@@ -75,7 +75,11 @@ func GetVideoFeed(c *gin.Context) {
 
 // GetUserVideos 获取用户视频列表
 func GetUserVideos(c *gin.Context) {
-	userID := c.GetInt64("user_id")
+	userID, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	if userID == 0 {
+		utils.Error(c, 400)
+		return
+	}
 
 	videos, err := service.GetUserVideos(userID)
 	if err != nil {

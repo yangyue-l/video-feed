@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"time"
 	"video_feed/internal/database"
 	"video_feed/internal/models"
 
@@ -37,7 +38,8 @@ func GetVideoFeed(latestTime int64, limit int) ([]models.Video, error) {
 	var videos []models.Video
 	query := database.DB.Order("created_at DESC")
 	if latestTime > 0 {
-		query = query.Where("created_at < ?", latestTime)
+		t := time.UnixMilli(latestTime)
+		query = query.Where("created_at < ?", t)
 	}
 	err := query.Limit(limit).Find(&videos).Error
 	return videos, err

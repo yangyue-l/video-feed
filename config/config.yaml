@@ -41,7 +41,7 @@ oss:
   access_key_id: ""      # 环境变量: OSS_ACCESS_KEY_ID
   access_key_secret: ""  # 环境变量: OSS_ACCESS_KEY_SECRET
   bucket_name: "tvyy"        # 环境变量: OSS_BUCKET_NAME
-  domain: "tvyy.oss-cn-beijing.aliyuncs.com"             # 环境变量: OSS_DOMAIN
+  domain: "https://tvyy.oss-cn-beijing.aliyuncs.com"             # 环境变量: OSS_DOMAIN
 
 # 日志配置
 log:
